@@ -1,7 +1,7 @@
 import socket
 
 import encryption
-import sniff
+import sniffing
 from scapy.all import *
 
 class Server:
@@ -13,16 +13,18 @@ class Server:
         self.client_addr = None
 
     def open(self):
-            self.server_socket.bind((self.ip,self.port))
-            self.server_socket.listen(1)
-            print("Server is up and running")
-            self.client_socket, self.client_addr = self.server_socket.accept()
-            print("Client connected")
+        self.server_socket.bind((self.ip,self.port))
+        self.server_socket.listen(1)
+        print("Server is up and running")
+        self.client_socket, self.client_addr = self.server_socket.accept()
+        print("Client connected")
             
-   def talk(self):
+    def talk(self):
         while True: 
-            data = self.client_socket.recv(4096).decode()
-		    sniff.bytes_to_packet(encryption.decrypt(data)).show()
+            data = self.client_socket.recv(4096)
+            data = encryption.decrypt(data)
+            sniffing.bytes_to_packet(data).show()
+		    
                       
 def main():
     server = Server()
