@@ -57,6 +57,7 @@ if __name__ == '__main__':
     moshe = b"abcdefghigjklmno"
     print(len(moshe))
     enc = encrypt(moshe)
+    print(len(enc))
     print(moshe.decode())
     print(enc)
     dec = decrypt(enc)

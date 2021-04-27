@@ -23,7 +23,9 @@ class Server:
         while True: 
             data = self.client_socket.recv(4096)
             data = encryption.decrypt(data)
-            sniffing.bytes_to_packet(data).show()
+            
+            data = sniffing.bytes_to_packet(data)
+            data.show()
 		    
                       
 def main():

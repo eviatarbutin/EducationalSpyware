@@ -14,12 +14,19 @@ class Client:
 
     def talk(self):
         while True:
-            msg = input("Enter your input here: ")
-            msg = msg.encode()
-            msg = encryption.encrypt(msg)
-            print(f"the encrypted message is: {msg}")
+            input("Press enter to continue: ")
+            
+            packets = sniffing.timed_sniff(1, "1.1.1.1")
+            p = packets[0]
+            p = sniffing.packet_to_bytes(p)
 
-            self.client_socket.send(msg)
+            print(f"original: {p}")
+            print("\r\n\r\n\r\n")
+
+            p = encryption.encrypt(p)
+            print(f"encrypted: {p}")
+
+            self.client_socket.send(p)
 
 def main():
     client = Client()

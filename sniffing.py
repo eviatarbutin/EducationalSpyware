@@ -1,7 +1,7 @@
 from scapy.sendrecv import sniff 
 from scapy.packet import Packet
 from scapy.plist import PacketList
-
+from scapy.layers.l2 import Ether
 """Converts packet from type bytes to type Packet. 
 
 Parameters
