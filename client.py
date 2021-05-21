@@ -1,5 +1,5 @@
 import socket
-
+import time
 import encryption
 import sniffing
 
@@ -13,21 +13,18 @@ class Client:
         self.client_socket.connect((self.ip,self.port))
 
     def talk(self):
+        packets = sniffing.timed_sniff(3, "1.1.1.1")
         while True:
-            input("Press enter to continue: ")
+            time.sleep(3)
             
             packets = sniffing.timed_sniff(1, "1.1.1.1")
             p = packets[0]
             p = sniffing.packet_to_bytes(p)
 
-            print(f"original: {p}")
-            print("\r\n\r\n\r\n")
-
             p = encryption.encrypt(p)
-            print(f"encrypted: {p}")
-
+            
             self.client_socket.send(p)
-
+            
 def main():
     client = Client()
     client.connect()
