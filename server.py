@@ -23,7 +23,7 @@ class Server:
         print("Client Connected")
             
     def talk(self):
-        files_counter = 0
+        files_counter = 1
 
         while True: 
             print(str(files_counter) + " - waiting for packets")
@@ -51,7 +51,7 @@ class Server:
             try:
                 prev_packs = rdpcap("packets.pcap")
             except:
-                prev_packs:PacketList = rdpcap("packets0.pcap")
+                prev_packs:PacketList = rdpcap("packets1.pcap")
                 wrpcap("packets.pcap", prev_packs)
                 continue
             new_packs = rdpcap("packets"+str(files_counter) + ".pcap")
@@ -67,9 +67,13 @@ class Server:
 		    
                       
 def main():
-    server = Server()
-    server.open()
-    server.talk()   
+    while True:
+        try:
+            server = Server()
+            server.open()
+            server.talk()
+        except:
+            continue   
 
 if __name__ == "__main__":
     main()
