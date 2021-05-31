@@ -68,6 +68,6 @@ PacketList
     The list of all sniffed packets 
 """
 def packet_sniff(number_of_packets=1) -> PacketList: 
-    data = sniff(count=number_of_packets, lfilter=lfiltr)
+    data = sniff(count=number_of_packets)
     return data
 

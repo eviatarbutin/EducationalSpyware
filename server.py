@@ -1,4 +1,5 @@
 import socket
+from struct import pack
 
 import encryption
 import sniffing
@@ -17,35 +18,50 @@ class Server:
     def open(self):
         self.server_socket.bind((self.ip,self.port))
         self.server_socket.listen(1)
-        print("Server is up and running")
+        print("Server is Up And Running")
         self.client_socket, self.client_addr = self.server_socket.accept()
-        print("Client connected")
+        print("Client Connected")
             
     def talk(self):
         files_counter = 0
+
         while True: 
+            print(str(files_counter) + " - waiting for packets")
             data = self.client_socket.recv(BUFFER_LENGTH)
-            print(len(data))
+            
             while True:
                 tmp = self.client_socket.recv(BUFFER_LENGTH)
+                print("recieving packets")
                 data += tmp
-                print(len(data))
+            
                 try:
-                    print(data[-3:])
-                    print(data[-3:].decode())
                     if data[-3:].decode() == "fin":
                         data = data[:-3]
                         break
                 except:
-                    print("nope")
                     continue
+            print(str(files_counter) + " - recieved packets")
+
             data = encryption.decrypt(data)
-            
             wfile = open("packets"+str(files_counter) + ".pcap", "wb")
             wfile.write(data)
+            
             wfile.close()
+            
+            try:
+                prev_packs = rdpcap("packets.pcap")
+            except:
+                prev_packs:PacketList = rdpcap("packets0.pcap")
+                wrpcap("packets.pcap", prev_packs)
+                continue
+            new_packs = rdpcap("packets"+str(files_counter) + ".pcap")
+            for packet in new_packs:
+                prev_packs.append(packet)    
+            wrpcap("packets.pcap", prev_packs)
+
             files_counter += 1
-            print("written")
+            print(str(files_counter) + " - packets written")
+
             #data = sniffing.bytes_to_packet(data)
             #data.show()
 		    
