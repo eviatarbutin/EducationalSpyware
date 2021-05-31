@@ -4,6 +4,8 @@ import encryption
 import sniffing
 from scapy.all import *
 
+BUFFER_LENGTH = 2**15
+
 class Server:
     def __init__(self,ip="0.0.0.0",port=8080):
         self.ip=ip
@@ -20,12 +22,32 @@ class Server:
         print("Client connected")
             
     def talk(self):
+        files_counter = 0
         while True: 
-            data = self.client_socket.recv(4096)
+            data = self.client_socket.recv(BUFFER_LENGTH)
+            print(len(data))
+            while True:
+                tmp = self.client_socket.recv(BUFFER_LENGTH)
+                data += tmp
+                print(len(data))
+                try:
+                    print(data[-3:])
+                    print(data[-3:].decode())
+                    if data[-3:].decode() == "fin":
+                        data = data[:-3]
+                        break
+                except:
+                    print("nope")
+                    continue
             data = encryption.decrypt(data)
             
-            data = sniffing.bytes_to_packet(data)
-            data.show()
+            wfile = open("packets"+str(files_counter) + ".pcap", "wb")
+            wfile.write(data)
+            wfile.close()
+            files_counter += 1
+            print("written")
+            #data = sniffing.bytes_to_packet(data)
+            #data.show()
 		    
                       
 def main():
