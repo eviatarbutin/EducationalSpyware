@@ -1,12 +1,11 @@
-"""
 from scapy.sendrecv import sniff 
 from scapy.packet import Packet
 from scapy.plist import PacketList
 from scapy.layers.l2 import Ether
-from scapy.layers.dns import DNS
+from scapy.layers.dns import DNSQR
+
 """
-from scapy.all import *
-"""Converts packet from type bytes to type Packet. 
+Converts packet from type bytes to type Packet. 
 
 Parameters
 ----------
@@ -21,7 +20,8 @@ Packet
 def bytes_to_packet(packet: bytes) -> Packet:
     return Ether(packet)
 
-"""Converts packet from type Packet to type bytes. 
+"""
+Converts packet from type Packet to type bytes. 
 
 Parameters
 ----------
@@ -36,9 +36,24 @@ bytes
 def packet_to_bytes(packet: Packet) -> bytes:
     return bytes(packet)
 
-def lfiltr(packet):
-    return DNS in packet 
-"""Sniffs packets for a period of time with a filter to a certain ip
+"""
+Filter DNSQR packets
+
+Parameters
+-------------
+packet : Packet
+    The packet that mb has to be filtered
+
+Returns
+--------
+bool
+    True if the packet needs to be stored, False if the packet needs to be filtered.
+"""
+def lfiltr(packet:Packet) -> bool:
+    return DNSQR in packet 
+
+"""
+Sniffs packets for a period of time with a filter to a certain ip
 
 Parameters
 ----------
