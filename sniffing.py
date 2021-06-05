@@ -2,7 +2,10 @@ from scapy.sendrecv import sniff
 from scapy.packet import Packet
 from scapy.plist import PacketList
 from scapy.layers.l2 import Ether
-"""Converts packet from type bytes to type Packet. 
+from scapy.layers.dns import DNSQR
+
+"""
+Converts packet from type bytes to type Packet. 
 
 Parameters
 ----------
@@ -17,7 +20,8 @@ Packet
 def bytes_to_packet(packet: bytes) -> Packet:
     return Ether(packet)
 
-"""Converts packet from type Packet to type bytes. 
+"""
+Converts packet from type Packet to type bytes. 
 
 Parameters
 ----------
@@ -32,7 +36,24 @@ bytes
 def packet_to_bytes(packet: Packet) -> bytes:
     return bytes(packet)
 
-"""Sniffs packets for a period of time with a filter to a certain ip
+"""
+Filter DNSQR packets
+
+Parameters
+-------------
+packet : Packet
+    The packet that mb has to be filtered
+
+Returns
+--------
+bool
+    True if the packet needs to be stored, False if the packet needs to be filtered.
+"""
+def lfiltr(packet:Packet) -> bool:
+    return DNSQR in packet 
+
+"""
+Sniffs packets for a period of time with a filter to a certain ip
 
 Parameters
 ----------
@@ -46,14 +67,7 @@ Returns
 PacketList
     The list of all sniffed packets 
 """
-def timed_sniff(seconds: int, filter_ip: str) -> PacketList: 
-    filter = f"not src host {filter_ip}"
-    data = sniff(timeout = seconds, filter = filter)
-
-    #The following part may get removed
-    length = 0
-    for p in data:
-        length += len(p)
-
+def packet_sniff(number_of_packets=1) -> PacketList: 
+    data = sniff(count=number_of_packets)
     return data
 
