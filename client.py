@@ -10,7 +10,7 @@ class Client:
         self.port = port
 
     def connect(self):
-        self.client_socket.connect((self.ip,self.port))
+        return self.client_socket.connect_ex((self.ip,self.port))
 
     def talk(self):
         packets = sniffing.timed_sniff(3, "1.1.1.1")
@@ -27,6 +27,8 @@ class Client:
             
 def main():
     client = Client()
+    while client.connect() != 0:
+        time.sleep(5)
     client.connect()
     client.talk()
 

