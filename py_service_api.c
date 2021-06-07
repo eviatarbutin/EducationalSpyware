@@ -6,23 +6,6 @@ SERVICE_STATUS        g_ServiceStatus = { 0 };
 SERVICE_STATUS_HANDLE g_StatusHandle = NULL;
 HANDLE                g_ServiceStopEvent = INVALID_HANDLE_VALUE;
 
-/*
-int _tmain(int argc, TCHAR* argv[])
-{
-    SERVICE_TABLE_ENTRY ServiceTable[] =
-    {
-        {SERVICE_NAME, (LPSERVICE_MAIN_FUNCTION)ServiceMain},
-        {NULL, NULL}
-    };
-
-    if (StartServiceCtrlDispatcher(ServiceTable) == FALSE)
-    {
-        return GetLastError();
-    }
-
-    return 0;
-}
-*/
 VOID WINAPI ServiceMain(DWORD argc, LPTSTR* argv)
 {
     DWORD Status = E_FAIL;
@@ -157,13 +140,9 @@ DWORD WINAPI ServiceWorkerThread(LPVOID lpParam)
          * Perform main service function here
          */
         Py_XINCREF(g_callback);         /* Add a reference to new callback */
-        //Py_XDECREF(callback);  /* Dispose of previous callback */
-        //callback = temp;       /* Remember new callback */
         /* Boilerplate to return "None" */
         Py_INCREF(Py_None);
-        //result = Py_None;
         PyObject_CallObject(g_callback, NULL);
-        //system("mkdir C:\\Users\\user\\Desktop\\Python\\EducationalSpyware\\kaki");
     }
 
     return ERROR_SUCCESS;
