@@ -1,5 +1,4 @@
 import socket
-from struct import pack
 
 import encryption
 import sniffing
@@ -28,10 +27,13 @@ class Server:
         while True: 
             print(str(files_counter) + " - waiting for packets")
             data = self.client_socket.recv(BUFFER_LENGTH)
-            
             while True:
                 tmp = self.client_socket.recv(BUFFER_LENGTH)
                 print("recieving packets")
+                if tmp == b'':
+                    self.client_socket.close()
+                    self.server_socket.close()
+                    return
                 data += tmp
             
                 try:
