@@ -5,14 +5,12 @@
 
 SERVICE_TABLE_ENTRY* g_ServiceTable;
 
-static PyObject* py_service_create(PyObject*, PyObject*);
-static PyObject* py_service_start();
+static PyObject* py_service_start(PyObject*, PyObject*);
 
 static PyObject* g_py_service_func;
 
 static PyMethodDef py_serviceMethods[] = {
-    {"create", (PyCFunction)&py_service_create, METH_VARARGS, NULL},
-    {"start", (PyCFunction)&py_service_start, METH_NOARGS, NULL},
+    {"start", (PyCFunction)&py_service_start, METH_VARARGS, NULL},
     {0,0,0,0}
 };
 static struct PyModuleDef py_servicemodule = {
@@ -31,9 +29,8 @@ PyMODINIT_FUNC PyInit_py_service(void)
 
 static PyObject* callback = NULL;
 
-static PyObject* py_service_create(PyObject* self, PyObject* args)
+static PyObject* py_service_start(PyObject* self, PyObject* args)
 {
-    
     PyObject* temp;
 
     if (PyArg_ParseTuple(args, "O:set_callback", &temp)) {
@@ -52,15 +49,10 @@ static PyObject* py_service_create(PyObject* self, PyObject* args)
         {NULL, NULL}
     };
 
-    return 0;
-}
-
-static PyObject* py_service_start()
-{
     if (StartServiceCtrlDispatcher(g_ServiceTable) == FALSE)
     {
         return GetLastError();
     }
 
-    return 0;
+    return NULL;
 }
