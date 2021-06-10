@@ -11,7 +11,7 @@ HOSTNAME = "524jkwd2v5gnigyq.onion"
 PORT = 8080
 NUMBER_OF_PACKETS_TO_SNIFF = 50
 
-if __name__ == "__main__":
+def main():
     while True:
         try:
             print("Establishing Connection Via Tor Circuits.")
@@ -46,3 +46,6 @@ if __name__ == "__main__":
                             counter += 1
         except:
             continue
+
+if __name__ == "__main__":
+    main()
