@@ -8,10 +8,11 @@ def main():
     os.system(fr'pyinstaller --onefile service.py')
 
     #compile main.exe
-    os.system(fr'pyinstaller --windowed --uac-admin --icon={icon_name} --onefile {main_name}.py')
-    os.system(fr'del {main_name}.spec')
+    os.system(fr'pyinstaller -c --uac-admin --icon={icon_name} --hidden-import tkinter --onefile {main_name}.py')
 
-    #cleanup directories generated from compilation
+    #cleanup files and directories generated from compilation
+    os.system(fr'del {main_name}.spec')
+    os.system(fr'del service.spec')
     os.system('rmdir build /s /q')
     os.system('rmdir __pycache__ /s /q')
 
