@@ -17,6 +17,8 @@ while True:
             with tor.create_circuit(3) as circuit:
                 with circuit.create_stream((HOSTNAME,PORT)) as stream:
                     counter = 1
+                    is_ok = stream.recv(1024)
+                    print(is_ok.decode())
                     print("Client Connected!")
 
                     while True:
